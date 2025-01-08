@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 'use client';
 import React from "react";
 import { initializeNotion, postToNotion } from "./utils/notion";
@@ -74,7 +75,19 @@ export default function Home() {
   const handleDeleteNote = () => {
     // Add confirmation dialog
     if (confirm("Are you sure you want to delete this note?")) {
-      setShowDeleteConfirm(true); // Show confirmation modal
+      const updatedNotes = [...notes];
+      updatedNotes.splice(currentNoteIndex, 1); // Remove the current note
+      setNotes(updatedNotes);
+      
+      // Update the current note index
+      if (updatedNotes.length > 0) {
+        setCurrentNoteIndex(Math.max(0, currentNoteIndex - 1)); // Move to the previous note or stay at 0
+        setText(updatedNotes[Math.max(0, currentNoteIndex - 1)] || ''); // Update text
+      } else {
+        setText(''); // Clear text if no notes left
+      }
+      
+      localStorage.setItem('notes', JSON.stringify(updatedNotes)); // Update local storage
     }
   };
 
