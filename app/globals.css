@@ -19,3 +19,10 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@supports (-webkit-touch-callout: none) {
+  .safe-bottom {
+    /* For iOS safari, we need to add padding to account for the home indicator */
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
