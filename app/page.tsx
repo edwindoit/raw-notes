@@ -13,7 +13,6 @@ export default function Home() {
   const [notes, setNotes] = React.useState<string[]>([]);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [showApiModal, setShowApiModal] = React.useState(false);
-  const [notionConfigured, setNotionConfigured] = React.useState(false);
 
   React.useEffect(() => {
     // Check for stored Notion credentials
@@ -22,7 +21,6 @@ export default function Home() {
     
     if (storedApiKey && storedDatabaseId) {
       initializeNotion(storedApiKey);
-      setNotionConfigured(true);
     }
 
     // Load all saved notes
@@ -95,7 +93,6 @@ export default function Home() {
     localStorage.setItem('notion_api_key', apiKey);
     localStorage.setItem('notion_database_id', databaseId);
     initializeNotion(apiKey);
-    setNotionConfigured(true);
     setShowApiModal(false);
   };
 
