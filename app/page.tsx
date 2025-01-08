@@ -13,6 +13,7 @@ export default function Home() {
   const [notes, setNotes] = React.useState<string[]>([]);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [showApiModal, setShowApiModal] = React.useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
 
   React.useEffect(() => {
     // Check for stored Notion credentials
@@ -70,23 +71,10 @@ export default function Home() {
   };
 
   const handleDeleteNote = () => {
-    if (notes.length <= 1) {
-      // Don't delete if it's the last note, just clear it
-      setText('');
-      setNotes(['']);
-      localStorage.setItem('notes', JSON.stringify(['']));
-      return;
+    // Add confirmation dialog
+    if (confirm("Are you sure you want to delete this note?")) {
+      setShowDeleteConfirm(true); // Show confirmation modal
     }
-
-    const updatedNotes = notes.filter((_, index) => index !== currentNoteIndex);
-    setNotes(updatedNotes);
-    
-    // Move to the previous note, or the next one if we're at the beginning
-    const newIndex = currentNoteIndex > 0 ? currentNoteIndex - 1 : 0;
-    setCurrentNoteIndex(newIndex);
-    setText(updatedNotes[newIndex]);
-    
-    localStorage.setItem('notes', JSON.stringify(updatedNotes));
   };
 
   const handleApiConfig = (apiKey: string, databaseId: string) => {
