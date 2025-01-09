@@ -129,7 +129,7 @@ export default function Home() {
           />
         </div>
         
-        <div className="fixed bottom-[300px] left-0 right-0 py-4 bg-inherit backdrop-blur-sm">
+        <div className="fixed bottom-[310px] left-0 right-0 py-4 bg-inherit backdrop-blur-sm">
           <div className="flex justify-between max-w-2xl mx-auto px-4">
             <button 
               onClick={() => setShowApiModal(true)}
