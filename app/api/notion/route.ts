@@ -15,7 +15,7 @@ export async function POST(request: Request) {
           title: [
             {
               text: {
-                content: 'raw.' + content.slice(0, 5) + '.note',
+                content: 'r.' + content.slice(0, 100),
               },
             },
           ],

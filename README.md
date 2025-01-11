@@ -1,5 +1,25 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Overview
+
+This application is a note-taking app that integrates with Notion. Users can create, edit, and manage notes locally, and optionally post them to a Notion database.
+
+## Key Features
+
+- **Note Management**: Create, edit, and delete notes. Notes are stored locally in the browser's local storage.
+- **Notion Integration**: Post notes to a specified Notion database using the Notion API.
+- **API Configuration**: Configure Notion API credentials through a modal interface.
+
+## Important Files
+
+- **`app/api/notion/route.ts`**: Handles the POST requests to the Notion API. It creates a new page in the specified Notion database with the provided content.
+
+- **`app/components/NotionApiModal.tsx`**: A React component that provides a modal interface for users to input and save their Notion API key and database ID.
+
+- **`app/utils/notion.ts`**: Contains utility functions for initializing the Notion client and posting data to Notion.
+
+- **`app/page.tsx`**: The main page component of the app. It manages the state of notes, handles user interactions, and integrates with the Notion API.
+
 ## Getting Started
 
 First, run the development server:
@@ -17,8 +37,6 @@ bun dev
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
 
