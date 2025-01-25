@@ -11,11 +11,15 @@ initializeNotion(process.env.NEXT_PUBLIC_NOTION_API_KEY || '');
 
 export default function Home() {
   const [text, setText] = React.useState('');
+  const [blockCount, setBlockCount] = React.useState(0);
   const [currentNoteIndex, setCurrentNoteIndex] = React.useState(0);
   const [notes, setNotes] = React.useState<string[]>([]);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [showApiModal, setShowApiModal] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+
+  const BLOCK_LIMIT = 95;
+  const WARNING_THRESHOLD = 10;
 
   React.useEffect(() => {
     // Check for stored Notion credentials
@@ -45,15 +49,30 @@ export default function Home() {
     textareaRef.current?.focus();
   }, [text, currentNoteIndex]); // Re-focus when text or current note changes
 
+  // Add debounced block counting
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      const count = text.split('\n').filter(line => line.trim().length > 0).length;
+      setBlockCount(count);
+    }, 300); // 300ms delay
+
+    return () => clearTimeout(timer);
+  }, [text]);
+
   const handleTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newText = e.target.value;
-    setText(newText);
+    const currentBlockCount = newText.split('\n').filter(line => line.trim().length > 0).length;
     
-    // Update the current note in the notes array
-    const updatedNotes = [...notes];
-    updatedNotes[currentNoteIndex] = newText;
-    setNotes(updatedNotes);
-    localStorage.setItem('notes', JSON.stringify(updatedNotes));
+    // Only block changes if we're adding new blocks beyond the limit
+    if (currentBlockCount <= BLOCK_LIMIT || currentBlockCount <= blockCount) {
+      setText(newText);
+      
+      // Update the current note in the notes array
+      const updatedNotes = [...notes];
+      updatedNotes[currentNoteIndex] = newText;
+      setNotes(updatedNotes);
+      localStorage.setItem('notes', JSON.stringify(updatedNotes));
+    }
   };
 
   const handleNewNote = () => {
@@ -124,7 +143,13 @@ export default function Home() {
             ref={textareaRef}
             value={text}
             onChange={handleTextChange}
-            className="w-full h-full p-4 rounded-lg border border-black/[.08] dark:border-white/[.145] bg-transparent resize-none focus:outline-none"
+            className={`w-full h-full p-4 rounded-lg border-2 ${
+              blockCount >= BLOCK_LIMIT 
+                ? 'border-red-500' 
+                : blockCount > BLOCK_LIMIT - WARNING_THRESHOLD 
+                  ? 'border-yellow-500' 
+                  : 'border-black/[.08] dark:border-white/[.145]'
+            } bg-transparent resize-none focus:outline-none`}
             placeholder="Start typing..."
           />
         </div>
