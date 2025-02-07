@@ -220,7 +220,7 @@ export default function Home() {
           />
         </div>
         
-        <div className="fixed bottom-[310px] left-0 right-0 py-4 bg-inherit backdrop-blur-sm">
+        <div className="fixed bottom-[305px] left-0 right-0 py-4 bg-inherit backdrop-blur-sm">
           <div className="flex justify-end max-w-2xl mx-auto px-4">
             <div className="flex gap-2">
               <button 
