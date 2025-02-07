@@ -117,6 +117,37 @@ export default function Home() {
     setShowApiModal(false);
   };
 
+  const handlePostAndDelete = async () => {
+    try {
+      const apiKey = localStorage.getItem('notion_api_key');
+      const databaseId = localStorage.getItem('notion_database_id');
+      
+      if (!apiKey || !databaseId) {
+        setShowApiModal(true);
+        return;
+      }
+
+      await postToNotion(databaseId, text);
+      // After successful post, delete the note
+      const updatedNotes = [...notes];
+      updatedNotes.splice(currentNoteIndex, 1);
+      setNotes(updatedNotes);
+      
+      if (updatedNotes.length > 0) {
+        setCurrentNoteIndex(Math.max(0, currentNoteIndex - 1));
+        setText(updatedNotes[Math.max(0, currentNoteIndex - 1)] || '');
+      } else {
+        setText('');
+      }
+      
+      localStorage.setItem('notes', JSON.stringify(updatedNotes));
+      alert('Successfully posted to Notion and deleted the note!');
+    } catch (error) {
+      console.error('Error posting to Notion:', error);
+      alert('Failed to post to Notion. Note was not deleted.');
+    }
+  };
+
   const handlePostToNotion = async () => {
     try {
       const apiKey = localStorage.getItem('notion_api_key');
@@ -168,6 +199,12 @@ export default function Home() {
                 className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] px-3 sm:px-4 h-9 sm:h-10 text-sm sm:text-base min-w-[60px]"
               >
                 Del
+              </button>
+              <button 
+                onClick={handlePostAndDelete}
+                className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] px-3 sm:px-4 h-9 sm:h-10 text-sm sm:text-base min-w-[60px]"
+              >
+                P&D
               </button>
               <button 
                 onClick={handlePostToNotion}
