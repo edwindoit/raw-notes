@@ -13,10 +13,11 @@ export default function Home() {
   const [text, setText] = React.useState('');
   const [blockCount, setBlockCount] = React.useState(0);
   const [currentNoteIndex, setCurrentNoteIndex] = React.useState(0);
-  const [notes, setNotes] = React.useState<string[]>([]);
+  const [notes, setNotes] = React.useState<Array<{title: string; content: string}>>([]);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [showApiModal, setShowApiModal] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
+  const [title, setTitle] = React.useState('');
 
   const BLOCK_LIMIT = 95;
   const WARNING_THRESHOLD = 10;
@@ -35,14 +36,14 @@ export default function Home() {
     if (savedNotes) {
       const parsedNotes = JSON.parse(savedNotes);
       setNotes(parsedNotes);
-      setText(parsedNotes[0] || '');
+      setText(parsedNotes[0]?.content || '');
+      setTitle(parsedNotes[0]?.title || '');
     } else {
       // Initialize with one empty note
-      setNotes(['']);
+      setNotes([{ title: '', content: '' }]);
     }
-    // Add focus here
     textareaRef.current?.focus();
-  }, []); // Initial load
+  }, []);
 
   // Add a new useEffect for focusing after state changes
   React.useEffect(() => {
@@ -63,23 +64,25 @@ export default function Home() {
     const newText = e.target.value;
     const currentBlockCount = newText.split('\n').filter(line => line.trim().length > 0).length;
     
-    // Only block changes if we're adding new blocks beyond the limit
     if (currentBlockCount <= BLOCK_LIMIT || currentBlockCount <= blockCount) {
       setText(newText);
       
-      // Update the current note in the notes array
       const updatedNotes = [...notes];
-      updatedNotes[currentNoteIndex] = newText;
+      updatedNotes[currentNoteIndex] = {
+        ...updatedNotes[currentNoteIndex],
+        content: newText
+      };
       setNotes(updatedNotes);
       localStorage.setItem('notes', JSON.stringify(updatedNotes));
     }
   };
 
   const handleNewNote = () => {
-    const updatedNotes = [...notes, ''];
+    const updatedNotes = [...notes, { title: '', content: '' }];
     setNotes(updatedNotes);
     setCurrentNoteIndex(updatedNotes.length - 1);
     setText('');
+    setTitle('');
     localStorage.setItem('notes', JSON.stringify(updatedNotes));
     textareaRef.current?.focus();
   };
@@ -87,26 +90,29 @@ export default function Home() {
   const handleNextNote = () => {
     const nextIndex = (currentNoteIndex + 1) % notes.length;
     setCurrentNoteIndex(nextIndex);
-    setText(notes[nextIndex]);
+    setText(notes[nextIndex].content);
+    setTitle(notes[nextIndex].title);
     textareaRef.current?.focus();
   };
 
   const handleDeleteNote = () => {
-    // Add confirmation dialog
     if (confirm("Are you sure you want to delete this note?")) {
       const updatedNotes = [...notes];
-      updatedNotes.splice(currentNoteIndex, 1); // Remove the current note
+      updatedNotes.splice(currentNoteIndex, 1);
       setNotes(updatedNotes);
       
-      // Update the current note index
       if (updatedNotes.length > 0) {
-        setCurrentNoteIndex(Math.max(0, currentNoteIndex - 1)); // Move to the previous note or stay at 0
-        setText(updatedNotes[Math.max(0, currentNoteIndex - 1)] || ''); // Update text
+        const newIndex = Math.max(0, currentNoteIndex - 1);
+        setCurrentNoteIndex(newIndex);
+        setText(updatedNotes[newIndex].content);
+        setTitle(updatedNotes[newIndex].title);
       } else {
-        setText(''); // Clear text if no notes left
+        setText('');
+        setTitle('');
+        setNotes([{ title: '', content: '' }]);
       }
       
-      localStorage.setItem('notes', JSON.stringify(updatedNotes)); // Update local storage
+      localStorage.setItem('notes', JSON.stringify(updatedNotes));
     }
   };
 
@@ -135,9 +141,11 @@ export default function Home() {
       
       if (updatedNotes.length > 0) {
         setCurrentNoteIndex(Math.max(0, currentNoteIndex - 1));
-        setText(updatedNotes[Math.max(0, currentNoteIndex - 1)] || '');
+        setText(updatedNotes[Math.max(0, currentNoteIndex - 1)]?.content || '');
+        setTitle(updatedNotes[Math.max(0, currentNoteIndex - 1)]?.title || '');
       } else {
         setText('');
+        setTitle('');
       }
       
       localStorage.setItem('notes', JSON.stringify(updatedNotes));
@@ -169,7 +177,25 @@ export default function Home() {
   return (
     <div className="fixed inset-0">
       <main className="flex flex-col w-full max-w-2xl mx-auto h-full px-4 mt-4">
-        <div className="h-[calc(100%-400px)]">
+        <div className="sticky top-0 z-10 bg-inherit backdrop-blur-sm">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => {
+              setTitle(e.target.value);
+              const updatedNotes = [...notes];
+              updatedNotes[currentNoteIndex] = {
+                ...updatedNotes[currentNoteIndex],
+                title: e.target.value
+              };
+              setNotes(updatedNotes);
+              localStorage.setItem('notes', JSON.stringify(updatedNotes));
+            }}
+            className="w-full py-0 px-2 font-bold border-black/[.08] dark:border-white/[.145] bg-transparent focus:outline-none"
+            placeholder="."
+          />
+        </div>
+        <div className="h-[calc(100%-420px)]">
           <textarea 
             ref={textareaRef}
             value={text}
