@@ -4,7 +4,7 @@ export const initializeNotion = (apiKey: string) => {
   notionApiKey = apiKey;
 };
 
-export const postToNotion = async (databaseId: string, content: string) => {
+export const postToNotion = async (databaseId: string, content: string, title?: string) => {
   if (!notionApiKey) {
     throw new Error('Notion API key not initialized');
   }
@@ -17,6 +17,7 @@ export const postToNotion = async (databaseId: string, content: string) => {
     body: JSON.stringify({
       databaseId,
       content,
+      title,
       apiKey: notionApiKey,
     }),
   });

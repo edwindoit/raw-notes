@@ -133,7 +133,7 @@ export default function Home() {
         return;
       }
 
-      await postToNotion(databaseId, text);
+      await postToNotion(databaseId, text, title);
       // After successful post, delete the note
       const updatedNotes = [...notes];
       updatedNotes.splice(currentNoteIndex, 1);
@@ -166,7 +166,7 @@ export default function Home() {
         return;
       }
 
-      await postToNotion(databaseId, text);
+      await postToNotion(databaseId, text, title);
       alert('Successfully posted to Notion!');
     } catch (error) {
       console.error('Error posting to Notion:', error);
@@ -177,7 +177,7 @@ export default function Home() {
   return (
     <div className="fixed inset-0">
       <main className="flex flex-col w-full max-w-2xl mx-auto h-full px-4 mt-4">
-        <div className="sticky top-0 z-10 bg-inherit backdrop-blur-sm">
+        <div className="sticky top-0 z-10 bg-inherit backdrop-blur-sm flex items-center justify-between">
           <input
             type="text"
             value={title}
@@ -191,11 +191,20 @@ export default function Home() {
               setNotes(updatedNotes);
               localStorage.setItem('notes', JSON.stringify(updatedNotes));
             }}
-            className="w-full py-0 px-2 font-bold border-black/[.08] dark:border-white/[.145] bg-transparent focus:outline-none"
+            className="w-[calc(100%-48px)] py-0 px-2 font-bold border-black/[.08] dark:border-white/[.145] bg-transparent focus:outline-none"
             placeholder="."
           />
+          <button 
+            onClick={() => setShowApiModal(true)}
+            className="p-2 rounded-full transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] h-9 w-9 flex items-center justify-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-black/[.08] dark:text-white/[.145]">
+              <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
         </div>
-        <div className="h-[calc(100%-420px)]">
+        <div className="h-[calc(100%-430px)]">
           <textarea 
             ref={textareaRef}
             value={text}
@@ -212,13 +221,7 @@ export default function Home() {
         </div>
         
         <div className="fixed bottom-[310px] left-0 right-0 py-4 bg-inherit backdrop-blur-sm">
-          <div className="flex justify-between max-w-2xl mx-auto px-4">
-            <button 
-              onClick={() => setShowApiModal(true)}
-              className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] px-3 sm:px-4 h-9 sm:h-10 text-sm sm:text-base min-w-[60px]"
-            >
-              API
-            </button>
+          <div className="flex justify-end max-w-2xl mx-auto px-4">
             <div className="flex gap-2">
               <button 
                 onClick={handleDeleteNote}
