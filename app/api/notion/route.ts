@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { databaseId, content, apiKey } = await request.json();
+    const { databaseId, content, apiKey, title } = await request.json();
     
     const notion = new Client({ auth: apiKey });
 
@@ -15,7 +15,7 @@ export async function POST(request: Request) {
           title: [
             {
               text: {
-                content: 'r.' + content.slice(0, 100),
+                content: title || ('r.' + content.slice(0, 100)),
               },
             },
           ],
