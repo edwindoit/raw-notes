@@ -24,12 +24,12 @@ export const postToNotion = async (databaseId: string, content: string, title?: 
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
+      'Authorization': `Bearer ${notionApiKey}`
     },
     body: JSON.stringify({
       databaseId,
       content,
-      title,
-      apiKey: notionApiKey
+      title
     }),
   });
 

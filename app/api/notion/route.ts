@@ -3,7 +3,13 @@ import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
   try {
-    const { databaseId, content, title, apiKey } = await request.json();
+    const { databaseId, content, title } = await request.json();
+    
+    // Get API key from Authorization header
+    const authHeader = request.headers.get('Authorization');
+    const apiKey = authHeader?.startsWith('Bearer ') 
+      ? authHeader.substring(7) 
+      : null;
     
     if (!apiKey) {
       return NextResponse.json(
@@ -47,9 +53,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, data: response });
   } catch (error) {
     console.error('Error posting to Notion:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to post to Notion' }, 
-      { status: 500 }
-    );
+    return NextResponse.json({ success: false, error: 'Failed to post to Notion' }, { status: 500 });
   }
 }
