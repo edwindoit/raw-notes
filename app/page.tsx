@@ -7,7 +7,7 @@ import NotionApiModal from "./components/NotionApiModal";
 
 // Initialize the client before making any calls
 // This should be done early in your app's lifecycle
-initializeNotion(process.env.NEXT_PUBLIC_NOTION_API_KEY || '');
+// initializeNotion(process.env.NEXT_PUBLIC_NOTION_API_KEY || '');
 
 export default function Home() {
   const [text, setText] = React.useState('');
@@ -24,11 +24,12 @@ export default function Home() {
 
   React.useEffect(() => {
     // Check for stored Notion credentials
-    const storedApiKey = localStorage.getItem('notion_api_key');
-    const storedDatabaseId = localStorage.getItem('notion_database_id');
+    const databaseIdentifier = localStorage.getItem('notion_database_identifier');
     
-    if (storedApiKey && storedDatabaseId) {
-      initializeNotion(storedApiKey);
+    // We don't need to initialize with an API key anymore
+    // Just store the database ID for later use
+    if (databaseIdentifier) {
+      initializeNotion('', databaseIdentifier);
     }
 
     // Load all saved notes
@@ -117,9 +118,18 @@ export default function Home() {
   };
 
   const handleApiConfig = (apiKey: string, databaseId: string) => {
-    localStorage.setItem('notion_api_key', apiKey);
-    localStorage.setItem('notion_database_id', databaseId);
-    initializeNotion(apiKey);
+    // Store the database ID
+    localStorage.setItem('notion_database_identifier', databaseId);
+    
+    // Store a hashed version of the API key just for reference
+    const hashedKey = `n_${btoa(apiKey).slice(-10)}`;
+    localStorage.setItem('notion_key_identifier', hashedKey);
+    
+    // This is the critical part - initialize with the actual API key
+    initializeNotion(apiKey, databaseId);
+    
+    console.log("API key initialized:", apiKey ? "Yes (not empty)" : "No (empty)");
+    
     setShowApiModal(false);
   };
 
