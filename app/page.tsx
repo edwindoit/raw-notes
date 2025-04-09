@@ -2,12 +2,8 @@
 
 'use client';
 import React from "react";
-import { initializeNotion, postToNotion } from "./utils/notion";
+import { initializeNotion, postToNotion, saveNotionCredentials } from "./utils/notion";
 import NotionApiModal from "./components/NotionApiModal";
-
-// Initialize the client before making any calls
-// This should be done early in your app's lifecycle
-initializeNotion(process.env.NEXT_PUBLIC_NOTION_API_KEY || '');
 
 export default function Home() {
   const [text, setText] = React.useState('');
@@ -18,18 +14,24 @@ export default function Home() {
   const [showApiModal, setShowApiModal] = React.useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [title, setTitle] = React.useState('');
+  const [isInitialized, setIsInitialized] = React.useState(false);
 
   const BLOCK_LIMIT = 95;
   const WARNING_THRESHOLD = 10;
 
   React.useEffect(() => {
-    // Check for stored Notion credentials
-    const storedApiKey = localStorage.getItem('notion_api_key');
-    const storedDatabaseId = localStorage.getItem('notion_database_id');
-    
-    if (storedApiKey && storedDatabaseId) {
-      initializeNotion(storedApiKey);
-    }
+    // Check for Notion credentials
+    const checkNotionCredentials = async () => {
+      try {
+        await initializeNotion();
+        setIsInitialized(true);
+      } catch (error) {
+        console.log('Notion not configured:', error);
+        setIsInitialized(false);
+      }
+    };
+
+    checkNotionCredentials();
 
     // Load all saved notes
     const savedNotes = localStorage.getItem('notes');
@@ -48,14 +50,14 @@ export default function Home() {
   // Add a new useEffect for focusing after state changes
   React.useEffect(() => {
     textareaRef.current?.focus();
-  }, [text, currentNoteIndex]); // Re-focus when text or current note changes
+  }, [text, currentNoteIndex]);
 
   // Add debounced block counting
   React.useEffect(() => {
     const timer = setTimeout(() => {
       const count = text.split('\n').filter(line => line.trim().length > 0).length;
       setBlockCount(count);
-    }, 300); // 300ms delay
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [text]);
@@ -116,24 +118,25 @@ export default function Home() {
     }
   };
 
-  const handleApiConfig = (apiKey: string, databaseId: string) => {
-    localStorage.setItem('notion_api_key', apiKey);
-    localStorage.setItem('notion_database_id', databaseId);
-    initializeNotion(apiKey);
-    setShowApiModal(false);
+  const handleApiConfig = async (apiKey: string, databaseId: string) => {
+    try {
+      await saveNotionCredentials(apiKey, databaseId);
+      setIsInitialized(true);
+      setShowApiModal(false);
+    } catch (error) {
+      console.error('Failed to save credentials:', error);
+      alert('Failed to save credentials. Please try again.');
+    }
   };
 
   const handlePostAndDelete = async () => {
-    try {
-      const apiKey = localStorage.getItem('notion_api_key');
-      const databaseId = localStorage.getItem('notion_database_id');
-      
-      if (!apiKey || !databaseId) {
-        setShowApiModal(true);
-        return;
-      }
+    if (!isInitialized) {
+      setShowApiModal(true);
+      return;
+    }
 
-      await postToNotion(databaseId, text, title);
+    try {
+      await postToNotion(text, title);
       // After successful post, delete the note
       const updatedNotes = [...notes];
       updatedNotes.splice(currentNoteIndex, 1);
@@ -157,16 +160,13 @@ export default function Home() {
   };
 
   const handlePostToNotion = async () => {
-    try {
-      const apiKey = localStorage.getItem('notion_api_key');
-      const databaseId = localStorage.getItem('notion_database_id');
-      
-      if (!apiKey || !databaseId) {
-        setShowApiModal(true);
-        return;
-      }
+    if (!isInitialized) {
+      setShowApiModal(true);
+      return;
+    }
 
-      await postToNotion(databaseId, text, title);
+    try {
+      await postToNotion(text, title);
       alert('Successfully posted to Notion!');
     } catch (error) {
       console.error('Error posting to Notion:', error);
