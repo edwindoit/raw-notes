@@ -12,7 +12,6 @@ export default function Home() {
   const [notes, setNotes] = React.useState<Array<{title: string; content: string}>>([]);
   const textareaRef = React.useRef<HTMLTextAreaElement>(null);
   const [showApiModal, setShowApiModal] = React.useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = React.useState(false);
   const [title, setTitle] = React.useState('');
   const [isInitialized, setIsInitialized] = React.useState(false);
 

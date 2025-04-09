@@ -53,16 +53,3 @@ export const saveNotionCredentials = async (apiKey: string, databaseId: string) 
 
   return response.json();
 };
-
-export const clearNotionCredentials = async () => {
-  const response = await fetch('/api/auth', {
-    method: 'DELETE',
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(`Failed to clear credentials: ${errorData.error || response.statusText}`);
-  }
-
-  return response.json();
-};
