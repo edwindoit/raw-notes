@@ -1,54 +1,150 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RawNotes - A Minimalist Note-Taking App with Notion Integration
 
-## Overview
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-This application is a note-taking app that integrates with Notion. Users can create, edit, and manage notes locally, and optionally post them to a Notion database.
+RawNotes is a minimalist note-taking application built with Next.js that allows you to quickly capture thoughts and optionally sync them to Notion. It features a clean, distraction-free interface with local storage for your notes.
 
-## Key Features
+## 🚀 Features
 
-- **Note Management**: Create, edit, and delete notes. Notes are stored locally in the browser's local storage.
-- **Notion Integration**: Post notes to a specified Notion database using the Notion API.
-- **API Configuration**: Configure Notion API credentials through a modal interface.
+- **Minimalist Note Management**
+  - Create, edit, and delete notes
+  - Browser-based local storage
+  - Title and content support
+  - Block limit warning (95 blocks)
+  - Quick navigation between notes
 
-## Important Files
+- **Notion Integration**
+  - Post notes to Notion with a single click
+  - Post and delete functionality
+  - Secure API key and database ID storage
+  - Automatic title generation from content
 
-- **`app/api/notion/route.ts`**: Handles the POST requests to the Notion API. It creates a new page in the specified Notion database with the provided content.
+- **User Interface**
+  - Clean, distraction-free design
+  - Keyboard-friendly interface
+  - Block count indicator
+  - Settings modal for Notion configuration
 
-- **`app/components/NotionApiModal.tsx`**: A React component that provides a modal interface for users to input and save their Notion API key and database ID.
+## 📋 Prerequisites
 
-- **`app/utils/notion.ts`**: Contains utility functions for initializing the Notion client and posting data to Notion.
+- Node.js 18.0.0 or later
+- npm or yarn
+- A Notion account and API key (optional)
+- A Notion database to connect to (optional)
 
-- **`app/page.tsx`**: The main page component of the app. It manages the state of notes, handles user interactions, and integrates with the Notion API.
+## 🛠️ Installation
 
-## Getting Started
+1. Clone the repository:
+```bash
+git clone https://github.com/edwindoit/raw-notes.git
+cd rawnotes
+```
 
-First, run the development server:
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
 
+3. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🔧 Configuration
 
-## Learn More
+### Notion Setup (Optional)
+1. Create a new integration in the [Notion Developers](https://www.notion.so/my-integrations) page
+2. Copy your integration token
+3. Create a new database in Notion
+4. Share the database with your integration
+5. Copy the database ID from the URL
 
-To learn more about Next.js, take a look at the following resources:
+### Using the App
+1. Click the settings icon (gear) in the top right to configure Notion integration
+2. Enter your Notion API key and database ID
+3. Start creating notes!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🎯 Key Features in Detail
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Note Management
+- Create new notes with the "New" button
+- Navigate between notes with the "Next" button
+- Delete notes with the "Del" button
+- Notes are automatically saved to local storage
+- Each note can have a title and content
 
-## Deploy on Vercel
+### Notion Integration
+- "Post" button: Sends the current note to Notion
+- "P&D" button: Posts to Notion and deletes the local note
+- Automatic title generation from content if no title is provided
+- Secure storage of API credentials
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Block Management
+- Visual warning when approaching block limit (95 blocks)
+- Block count indicator
+- Automatic saving of notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🏗️ Project Structure
+
+```
+my-notes-app/
+├── app/
+│   ├── api/           # API routes for Notion integration
+│   ├── components/    # React components
+│   ├── utils/         # Utility functions
+│   └── page.tsx       # Main application page
+├── public/            # Static assets
+└── package.json       # Project dependencies
+```
+
+## 🔒 Security Considerations
+
+- Notion API keys are stored securely in cookies
+- All API calls are made server-side
+- No sensitive data is stored in local storage
+- Regular security audits are recommended
+
+## 🤝 Contributing
+
+We welcome contributions! Here's how to get started:
+
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/amazing-feature`)
+3. Make your changes
+4. Commit your changes (`git commit -m 'Add amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
+
+### Code Style
+- Follow the existing code style
+- Use TypeScript for all new code
+- Write meaningful commit messages
+- Include tests for new features
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- [Next.js](https://nextjs.org/) for the amazing framework
+- [Notion API](https://developers.notion.com/) for the integration capabilities
+- [Tailwind CSS](https://tailwindcss.com/) for the styling framework
+
+## 📞 Support
+
+For support, please open an issue in the GitHub repository or contact the maintainers.
+
+## 📈 Roadmap
+
+- [ ] Add keyboard shortcuts
+- [ ] Implement note search functionality
+- [ ] Add note categories/tags
+- [ ] Support for markdown formatting
+- [ ] Mobile app development
