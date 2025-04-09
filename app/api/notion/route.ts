@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
     // Test the connection by trying to retrieve the database
     try {
-      const database = await notion.databases.retrieve({ database_id: databaseId });
+      await notion.databases.retrieve({ database_id: databaseId });
       console.log('Successfully connected to database');
     } catch (dbError) {
       console.error('Failed to retrieve database:', dbError);

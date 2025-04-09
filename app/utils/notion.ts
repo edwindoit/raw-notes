@@ -1,5 +1,3 @@
-let notionApiKey: string | null = null;
-
 export const initializeNotion = async () => {
   try {
     const response = await fetch('/api/auth');
