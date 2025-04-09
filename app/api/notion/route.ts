@@ -1,25 +1,21 @@
 import { Client } from '@notionhq/client';
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
 export async function POST(request: Request) {
   try {
-    const { databaseId, content, apiKey, title } = await request.json();
+    const { content, title } = await request.json();
     
-    console.log('Received request with:', {
-      databaseId,
-      apiKeyLength: apiKey?.length,
-      title,
-      contentLength: content?.length
-    });
+    // Get credentials from cookies
+    const cookieStore = await cookies();
+    const apiKey = cookieStore.get('notion_api_key')?.value;
+    const databaseId = cookieStore.get('notion_database_id')?.value;
 
-    // Validate database ID format
-    const isValidDatabaseId = /^[0-9a-f]{32}$/.test(databaseId);
-    if (!isValidDatabaseId) {
-      console.error('Invalid database ID format:', databaseId);
-      return NextResponse.json({ 
-        success: false, 
-        error: 'Invalid database ID format. Expected 32-character hex string.' 
-      }, { status: 400 });
+    if (!apiKey || !databaseId) {
+      return NextResponse.json(
+        { success: false, error: 'Notion credentials not found. Please configure your API key and database ID.' },
+        { status: 401 }
+      );
     }
 
     const notion = new Client({ auth: apiKey });
