@@ -94,13 +94,26 @@ yarn dev
 
 ```
 my-notes-app/
-├── app/
-│   ├── api/           # API routes for Notion integration
-│   ├── components/    # React components
-│   ├── utils/         # Utility functions
-│   └── page.tsx       # Main application page
-├── public/            # Static assets
-└── package.json       # Project dependencies
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes for Notion integration
+│   ├── components/        # React components
+│   ├── utils/            # Utility functions
+│   ├── page.tsx          # Main application page
+│   ├── layout.tsx        # Root layout component
+│   └── globals.css       # Global styles
+├── public/                # Static assets
+├── .next/                 # Next.js build output
+├── node_modules/          # Project dependencies
+├── .gitignore            # Git ignore rules
+├── package.json          # Project configuration and dependencies
+├── package-lock.json     # Dependency lock file
+├── tsconfig.json         # TypeScript configuration
+├── next.config.ts        # Next.js configuration
+├── tailwind.config.ts    # Tailwind CSS configuration
+├── postcss.config.js     # PostCSS configuration
+├── postcss.config.mjs    # PostCSS module configuration
+├── eslint.config.mjs     # ESLint configuration
+└── next-env.d.ts         # Next.js TypeScript declarations
 ```
 
 ## 🔒 Security Considerations
